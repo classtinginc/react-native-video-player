@@ -199,7 +199,7 @@ export default class VideoPlayer extends Component {
 
   onPlayPress() {
     if (this.props.onPlayPress) {
-      this.props.onPlayPress();
+      this.props.onPlayPress(this.state.isPlaying);
     }
 
     this.setState({
