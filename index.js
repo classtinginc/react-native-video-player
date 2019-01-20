@@ -181,7 +181,7 @@ export default class VideoPlayer extends Component {
     if (!this.props.loop) {
       this.setState(
         { isPlaying: false },
-        () => this.player.seek(0)
+        () => this.player && this.player.seek(0)
       );
     } else {
       this.player.seek(0);
@@ -209,10 +209,15 @@ export default class VideoPlayer extends Component {
   }
 
   onMutePress() {
+    const isMuted = !this.state.isMuted;
+    if (this.props.onMutePress) {
+      this.props.onMutePress(isMuted);
+    }
     this.setState({
-      isMuted: !this.state.isMuted,
+      isMuted,
     });
     this.showControls();
+    
   }
 
   onToggleFullScreen() {
@@ -472,7 +477,9 @@ export default class VideoPlayer extends Component {
           ]}
           ref={p => { this.player = p; }}
           muted={this.props.muted || this.state.isMuted}
-          paused={!this.state.isPlaying}
+          paused={this.props.paused
+            ? this.props.paused || !this.state.isPlaying
+            : !this.state.isPlaying}
           onProgress={this.onProgress}
           onEnd={this.onEnd}
           onLoad={this.onLoad}
@@ -536,6 +543,7 @@ VideoPlayer.propTypes = {
   videoHeight: PropTypes.number,
   duration: PropTypes.number,
   autoplay: PropTypes.bool,
+  paused: PropTypes.bool,
   defaultMuted: PropTypes.bool,
   muted: PropTypes.bool,
   style: ViewPropTypes.style,
@@ -575,6 +583,7 @@ VideoPlayer.propTypes = {
   onPlayPress: PropTypes.func,
   onHideControls: PropTypes.func,
   onShowControls: PropTypes.func,
+  onMutePress: PropTypes.func,
 };
 
 VideoPlayer.defaultProps = {
